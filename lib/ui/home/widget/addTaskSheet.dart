@@ -56,7 +56,7 @@ class _AddTaskSheetState extends State<AddTaskSheet> {
               },
               controller: titleController,
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             CustomFormField(
@@ -71,7 +71,7 @@ class _AddTaskSheetState extends State<AddTaskSheet> {
               },
               controller: descriptionController,
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             Align(
