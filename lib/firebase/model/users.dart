@@ -4,12 +4,14 @@ class User{
   String? fullName;
   String? userName;
   String? email;
+  String? imageURL;
 
   User({
     this.id,
     this.fullName,
     this.userName,
     this.email,
+    this.imageURL,
 });
 
   User.fromFirestore(Map<String,dynamic>? data){
@@ -17,6 +19,7 @@ class User{
     fullName = data?["fullName"];
     userName = data?["userName"];
     email = data?["email"];
+    imageURL = data?["imageURL"];
 
   }
 
@@ -25,7 +28,8 @@ class User{
       "id": id,
       "fullName": fullName,
       "userName":userName,
-      "email":email
+      "email":email,
+      "imageURL":imageURL,
     };
   }
 }
