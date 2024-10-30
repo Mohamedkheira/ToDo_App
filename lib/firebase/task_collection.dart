@@ -24,6 +24,16 @@ class TaskCollection{
     newTask.id = docRef.id;
     await docRef.set(newTask);
   }
+  static Stream<List<Task>> getTaskListen(String userId, DateTime date) async* {
+    var collectionTask = getTaskCollection(userId);
+    var snapshots =  collectionTask.
+    where("date",isGreaterThanOrEqualTo: Timestamp.fromMillisecondsSinceEpoch(date.millisecondsSinceEpoch),
+    isLessThan: Timestamp.fromMillisecondsSinceEpoch(date.add(Duration(days: 1)).millisecondsSinceEpoch)
+    ).snapshots();
+    var queryDocList = snapshots.map((snapshotsOfTask)=> snapshotsOfTask.docs);
+    var tasksStream = queryDocList.map((documents) => documents.map((doc) => doc.data()).toList());
+    yield* tasksStream;
+  }
   static Future<List<Task>> getTask(String userId) async {
     var collectionTask = getTaskCollection(userId);
     var snapshot = await collectionTask.get();
@@ -34,5 +44,9 @@ class TaskCollection{
     var collectionTask = getTaskCollection(userId);
     var docRef = collectionTask.doc(taskId);
     await docRef.delete();
+  }
+
+  static Future<void> updateTaskFromFirebase({required String userId,required Task task}){
+    return getTaskCollection(userId).doc(task.id).update(task.toFirestore());
   }
 }

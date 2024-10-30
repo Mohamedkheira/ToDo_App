@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:todo/TodoProvider.dart';
 import 'package:todo/firebase/model/task.dart';
 import 'package:todo/firebase/task_collection.dart';
 import 'package:todo/style/app_style.dart';
@@ -107,7 +108,7 @@ class _AddTaskSheetState extends State<AddTaskSheet> {
                     borderRadius: BorderRadius.circular(10),
                   )),
                   onPressed: () {
-                    AddTask();
+                    addTask();
                   },
                   child: Text("Submit")),
             ),
@@ -120,26 +121,30 @@ class _AddTaskSheetState extends State<AddTaskSheet> {
     );
   }
 
-  AddTask() async {
-    DialogUtils.showLoadingDialog(context: context);
-    AuthUserProvider authProvider =
-        Provider.of<AuthUserProvider>(context, listen: false);
-    await TaskCollection.createTask(
-        authProvider.firebaseUser!.uid,
-        Task(
-          title: titleController.text,
-          description: descriptionController.text,
-          date: Timestamp.fromMillisecondsSinceEpoch(
-              selectedDate.millisecondsSinceEpoch),
-        ));
-    Navigator.pop(context);
-    DialogUtils.showMessageDialog(
-        context: context,
-        message: "Takes Created Successfully",
-        onPress: () {
-          Navigator.pop(context);
-          Navigator.pop(context);
-        });
+  addTask() async {
+    TodoProvider provider = Provider.of<TodoProvider>(context,listen: false);
+    if(formKey.currentState?.validate()??false){
+      DialogUtils.showLoadingDialog(context: context);
+      AuthUserProvider authProvider =
+      Provider.of<AuthUserProvider>(context, listen: false);
+      await TaskCollection.createTask(
+          authProvider.firebaseUser!.uid,
+          Task(
+            title: titleController.text,
+            description: descriptionController.text,
+            date: Timestamp.fromMillisecondsSinceEpoch(
+                selectedDate.millisecondsSinceEpoch),
+          ));
+      Navigator.pop(context);
+      DialogUtils.showMessageDialog(
+          context: context,
+          message: "Takes Created Successfully",
+          onPress: () {
+            Navigator.pop(context);
+            Navigator.pop(context);
+          });
+      // provider.refreshTask(authProvider.firebaseUser!.uid);
+    }
   }
 
   ShowDateSelecte() async {
